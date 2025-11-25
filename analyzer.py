@@ -128,7 +128,7 @@ def parse_dkim(selector: str, records: list[str]) -> DKIMAnalysis:
     }
 
     public_key = tags.get("p")
-    has_public_key = bool(public_key and public_key != "\"\"")
+    has_public_key = bool(public_key and public_key != '""')
 
     analysis = DKIMAnalysis(
         selector=selector,
