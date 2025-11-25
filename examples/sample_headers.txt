@@ -1,0 +1,4 @@
+Authentication-Results: mx.example.org; spf=pass smtp.mailfrom=example.com;
+    dkim=pass header.d=example.com header.s=default; dmarc=pass action=none
+Received: from mail.example.com by mx.example.org with ESMTPSA id abc123;
+    Tue, 20 Aug 2024 10:23:45 -0700 (PDT)
