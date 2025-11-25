@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import List
 
 from analyzer import DKIMAnalysis, DMARCAnalysis, SPFAnalysis
 
@@ -32,7 +31,7 @@ class RiskReport:
     spf: SPFAnalysis
     dmarc: DMARCAnalysis
     dkim: DKIMAnalysis
-    findings: List[RiskFinding]
+    findings: list[RiskFinding]
 
     @property
     def risk_level(self) -> RiskLevel:
@@ -48,7 +47,7 @@ class RiskReport:
 def calculate_risk(spf: SPFAnalysis, dmarc: DMARCAnalysis, dkim: DKIMAnalysis) -> RiskReport:
     """Generate a spoofability risk report from SPF, DMARC, and DKIM analyses."""
 
-    findings: List[RiskFinding] = []
+    findings: list[RiskFinding] = []
 
     # SPF evaluation
     if spf.record is None:

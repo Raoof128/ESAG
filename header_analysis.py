@@ -6,17 +6,16 @@ import email
 import re
 from dataclasses import dataclass
 from email.message import Message
-from typing import Dict, Optional
 
 
 @dataclass
 class AuthenticationResult:
     """Represents a simplified Authentication-Results summary."""
 
-    spf: Optional[str]
-    dkim: Optional[str]
-    dmarc: Optional[str]
-    raw_header: Optional[str]
+    spf: str | None
+    dkim: str | None
+    dmarc: str | None
+    raw_header: str | None
 
 
 _AUTH_RESULTS_PATTERN = re.compile(r"\b(spf|dkim|dmarc)=(?P<value>[a-zA-Z0-9_-]+)")
@@ -36,7 +35,7 @@ def parse_authentication_results(header_blob: str) -> AuthenticationResult:
     if auth_header is None:
         return AuthenticationResult(spf=None, dkim=None, dmarc=None, raw_header=None)
 
-    findings: Dict[str, str] = {}
+    findings: dict[str, str] = {}
     for match in _AUTH_RESULTS_PATTERN.finditer(auth_header):
         mechanism = match.group(1).lower()
         findings[mechanism] = match.group("value").lower()

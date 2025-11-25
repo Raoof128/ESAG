@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict
-from typing import Any, Dict
+from typing import Any
 
 from rich.console import Console
 from rich.table import Table
@@ -47,6 +47,6 @@ def to_json(report: RiskReport) -> str:
             return obj.value
         return obj
 
-    payload: Dict[str, Any] = asdict(report)
+    payload: dict[str, Any] = asdict(report)
     payload["risk_level"] = report.risk_level.value
     return json.dumps(payload, default=default, indent=2)

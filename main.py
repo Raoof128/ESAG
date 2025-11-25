@@ -15,10 +15,10 @@ from analyzer import (
     parse_dmarc,
     parse_spf,
 )
-from dns_resolver import DNSResolver, DNSLookupError, TXTRecordNotFound
+from dns_resolver import DNSLookupError, DNSResolver, TXTRecordNotFoundError
 from header_analysis import parse_authentication_results
 from report import render_terminal, to_json
-from risk import RiskFinding, RiskReport, RiskLevel, calculate_risk
+from risk import RiskFinding, RiskReport, calculate_risk
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ def analyze_domain(domain: str, selector: str) -> str:
 
     try:
         spf_records = resolver.get_txt_records(domain).records
-    except TXTRecordNotFound:
+    except TXTRecordNotFoundError:
         spf_records = []
     except DNSLookupError as exc:
         logger.error("Unable to fetch SPF: %s", exc)
@@ -62,7 +62,7 @@ def analyze_domain(domain: str, selector: str) -> str:
 
     try:
         dmarc_records = resolver.get_txt_records(f"_dmarc.{domain}").records
-    except TXTRecordNotFound:
+    except TXTRecordNotFoundError:
         dmarc_records = []
     except DNSLookupError as exc:
         logger.error("Unable to fetch DMARC: %s", exc)
@@ -72,7 +72,7 @@ def analyze_domain(domain: str, selector: str) -> str:
 
     try:
         dkim_records = resolver.get_txt_records(f"{selector}._domainkey.{domain}").records
-    except TXTRecordNotFound:
+    except TXTRecordNotFoundError:
         dkim_records = []
     except DNSLookupError as exc:
         logger.error("Unable to fetch DKIM: %s", exc)

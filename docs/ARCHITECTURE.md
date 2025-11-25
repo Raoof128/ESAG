@@ -21,7 +21,7 @@ This tool is designed as a small, composable CLI that can also be embedded as a 
 
 ## Error handling & logging
 
-- DNS errors are surfaced as `DNSLookupError` or `TXTRecordNotFound`, enabling clean CLI messaging.
+- DNS errors are surfaced as `DNSLookupError` or `TXTRecordNotFoundError`, enabling clean CLI messaging.
 - Logging is centralized through the standard library and can be elevated with `--verbose`.
 
 ## Extensibility

@@ -4,7 +4,7 @@ This document summarizes the primary modules and callable interfaces provided by
 
 ## `dns_resolver`
 - **`DNSResolver.get_txt_records(name: str) -> TXTLookupResult`**: Perform TXT lookups with hardened error handling.
-- **Exceptions**: `TXTRecordNotFound` when no TXT records are present, `DNSLookupError` for timeouts or other resolver errors.
+- **Exceptions**: `TXTRecordNotFoundError` when no TXT records are present, `DNSLookupError` for timeouts or other resolver errors.
 
 ## `analyzer`
 - **`parse_spf(records: list[str]) -> SPFAnalysis`**: Extract SPF mechanisms, fail modes, and DNS lookup counts.

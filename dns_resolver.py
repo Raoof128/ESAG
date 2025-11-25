@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import List
 
 import dns.exception
 import dns.resolver
@@ -20,7 +19,7 @@ class DNSLookupError(RuntimeError):
     """Raised when TXT lookup fails for reasons other than record absence."""
 
 
-class TXTRecordNotFound(ValueError):
+class TXTRecordNotFoundError(ValueError):
     """Raised when no TXT records are found for the requested name."""
 
 
@@ -29,7 +28,7 @@ class TXTLookupResult:
     """Container for TXT lookup data."""
 
     name: str
-    records: List[str]
+    records: list[str]
 
 
 class DNSResolver:
@@ -49,7 +48,7 @@ class DNSResolver:
             name: Domain or hostname to query.
 
         Raises:
-            TXTRecordNotFound: No TXT records exist for the name.
+            TXTRecordNotFoundError: No TXT records exist for the name.
             DNSLookupError: A non-recoverable DNS error occurred.
         """
 
@@ -57,7 +56,7 @@ class DNSResolver:
         try:
             answers = self._resolver.resolve(name, "TXT")
         except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer) as exc:
-            raise TXTRecordNotFound(f"No TXT records found for {name}") from exc
+            raise TXTRecordNotFoundError(f"No TXT records found for {name}") from exc
         except (dns.exception.Timeout, dns.resolver.NoNameservers) as exc:
             raise DNSLookupError(f"DNS query for {name} timed out or nameservers failed") from exc
         except dns.exception.DNSException as exc:  # pragma: no cover - defensive catch

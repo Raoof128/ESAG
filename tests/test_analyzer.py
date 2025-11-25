@@ -1,6 +1,4 @@
-import pytest
-
-from analyzer import DMARCAnalysis, DKIMAnalysis, SPFAnalysis, parse_dkim, parse_dmarc, parse_spf
+from analyzer import DKIMAnalysis, DMARCAnalysis, parse_dkim, parse_dmarc, parse_spf
 
 
 def test_parse_spf_flags_allows_and_fail_modes():

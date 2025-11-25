@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 import re
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +15,8 @@ SPF_LOOKUP_MECHANISMS = {"include", "a", "mx", "ptr", "exists", "redirect"}
 class SPFAnalysis:
     """Represents the analyzed state of an SPF record."""
 
-    record: Optional[str]
-    mechanisms: List[str] = field(default_factory=list)
+    record: str | None
+    mechanisms: list[str] = field(default_factory=list)
     has_soft_fail: bool = False
     has_hard_fail: bool = False
     has_allow_all: bool = False
@@ -29,10 +28,10 @@ class SPFAnalysis:
 class DMARCAnalysis:
     """Represents the analyzed state of a DMARC policy record."""
 
-    record: Optional[str]
-    policy: Optional[str]
-    rua: Optional[str]
-    pct: Optional[int]
+    record: str | None
+    policy: str | None
+    rua: str | None
+    pct: int | None
 
 
 @dataclass
@@ -40,13 +39,13 @@ class DKIMAnalysis:
     """Represents the analyzed state of a DKIM key record."""
 
     selector: str
-    record: Optional[str]
-    key_type: Optional[str] = None
-    service_type: Optional[str] = None
+    record: str | None
+    key_type: str | None = None
+    service_type: str | None = None
     has_public_key: bool = False
 
 
-def parse_spf(records: List[str]) -> SPFAnalysis:
+def parse_spf(records: list[str]) -> SPFAnalysis:
     """Parse SPF records and return an analysis object.
 
     The function extracts mechanisms, fail modes, and lookup-heavy directives such as
@@ -89,7 +88,7 @@ def _is_lookup_mechanism(token: str) -> bool:
     return mechanism in SPF_LOOKUP_MECHANISMS
 
 
-def parse_dmarc(records: List[str]) -> DMARCAnalysis:
+def parse_dmarc(records: list[str]) -> DMARCAnalysis:
     """Parse DMARC records and return an analysis object."""
 
     dmarc_record = next((rec for rec in records if rec.lower().startswith("v=dmarc1")), None)
@@ -97,13 +96,13 @@ def parse_dmarc(records: List[str]) -> DMARCAnalysis:
         return DMARCAnalysis(record=None, policy=None, rua=None, pct=None)
 
     tag_pattern = re.compile(r"(?P<key>[a-zA-Z]+)=(?P<value>[^;\s]+)")
-    tags: Dict[str, str] = {
+    tags: dict[str, str] = {
         match.group("key").lower(): match.group("value")
         for match in tag_pattern.finditer(dmarc_record)
     }
 
     pct_value = tags.get("pct")
-    pct: Optional[int] = int(pct_value) if pct_value and pct_value.isdigit() else None
+    pct: int | None = int(pct_value) if pct_value and pct_value.isdigit() else None
 
     analysis = DMARCAnalysis(
         record=dmarc_record,
@@ -115,7 +114,7 @@ def parse_dmarc(records: List[str]) -> DMARCAnalysis:
     return analysis
 
 
-def parse_dkim(selector: str, records: List[str]) -> DKIMAnalysis:
+def parse_dkim(selector: str, records: list[str]) -> DKIMAnalysis:
     """Parse DKIM selector TXT records into structured data."""
 
     dkim_record = next((rec for rec in records if rec.lower().startswith("v=dkim1")), None)
@@ -123,8 +122,9 @@ def parse_dkim(selector: str, records: List[str]) -> DKIMAnalysis:
         return DKIMAnalysis(selector=selector, record=None)
 
     tag_pattern = re.compile(r"(?P<key>[a-zA-Z]+)=(?P<value>[^;\s]+)")
-    tags: Dict[str, str] = {
-        match.group("key").lower(): match.group("value") for match in tag_pattern.finditer(dkim_record)
+    tags: dict[str, str] = {
+        match.group("key").lower(): match.group("value")
+        for match in tag_pattern.finditer(dkim_record)
     }
 
     public_key = tags.get("p")

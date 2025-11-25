@@ -7,7 +7,13 @@ def test_parse_authentication_results_extracts_outcomes():
         "dkim=fail header.d=bad.example; dmarc=pass action=none"
     )
     result = parse_authentication_results(raw_headers)
-    assert result == AuthenticationResult(spf="pass", dkim="fail", dmarc="pass", raw_header=result.raw_header)
+    expected = AuthenticationResult(
+        spf="pass",
+        dkim="fail",
+        dmarc="pass",
+        raw_header=result.raw_header,
+    )
+    assert result == expected
     assert "mx.example.org" in result.raw_header
 
 
